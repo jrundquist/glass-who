@@ -21,9 +21,10 @@ class User < ActiveRecord::Base
     user = User.where(:email => data["email"]).first
 
     unless user
-        user = User.create(name: data["name"],
-             email: data["email"],
-             password: Devise.friendly_token[0,20]
+        user = User.create(
+              name: data["name"],
+              email: data["email"],
+              password: Devise.friendly_token[0,20]
             )
         user.access_token = access_token.credentials.token
         user.refresh_token = access_token.credentials.refresh_token
@@ -42,8 +43,8 @@ class User < ActiveRecord::Base
   def self.get_current_token(user)
     if (user.access_token.nil? || (user.token_expires_at.nil? || user.token_expires_at < Time.now))
       data = {
-        :client_id => ENV["GOOGLE_KEY"],
-        :client_secret => ENV["GOOGLE_SECRET"],
+        :client_id => ENV["GOOGLE_CLIENT_ID"],
+        :client_secret => ENV["GOOGLE_CLIENT_SECRET"],
         :refresh_token => user.refresh_token,
         :grant_type => "refresh_token"
       }
